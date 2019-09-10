@@ -8,9 +8,12 @@ import android.view.View
 
 class ChartView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
 
+    private var partCount = 0
+    private val paint: Paint = Paint()
+    private val rect: RectF = RectF()
+    private var colors: ArrayList<Int> = ArrayList()
 
     override fun onDraw(canvas: Canvas) {
-
         super.onDraw(canvas)
         val width = width
         val height = height
@@ -21,31 +24,46 @@ class ChartView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         } else {
             width.toFloat() / 2
         }
-
-        val paint = Paint()
-        paint.color = Color.CYAN
         paint.style = Paint.Style.FILL
 
         val center_x: Float
         val center_y: Float
-        val oval = RectF()
 //        paint.setStyle(Paint.Style.STROKE)
 
         center_x = width / 2f
         center_y = height / 2f
 
-        oval.set(
+        rect.set(
             center_x - radius,
             center_y - radius,
             center_x + radius,
             center_y + radius
         )
-        canvas.drawArc(oval, 0f, 90f, true, paint)
-        paint.color = Color.BLUE
-        canvas.drawArc(oval, 90f, 90f, true, paint)
-        paint.color = Color.GREEN
-        canvas.drawArc(oval, 180f, 90f, true, paint)
-        paint.color = Color.YELLOW
-        canvas.drawArc(oval, 270f, 90f, true, paint)
+
+        if(partCount <= 0){
+            return
+        }
+
+        val partSpace = 360 / partCount
+
+        for (i in 0..partCount){
+            val color = if(i < colors.size){
+                colors[i]
+            } else {
+                Color.parseColor(ChartHelper.generateColor())
+            }
+            paint.color = color
+            canvas.drawArc(rect, i * partSpace.toFloat(), partSpace.toFloat(), true, paint)
+        }
+    }
+
+    fun setPartCount(parts: Int) {
+        this.partCount = parts
+        invalidate()
+    }
+
+    fun setPartColors(colors: Array<Int>) {
+        this.colors.clear()
+        this.colors.addAll(colors)
     }
 }
