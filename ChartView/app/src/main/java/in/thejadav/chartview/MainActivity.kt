@@ -11,7 +11,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        chartView.setPartColors(arrayOf(ContextCompat.getColor(this, R.color.colorAccent)))
-        chartView.setPartCount(4)
+        chartView.setSizeBasedOnWeight(true)
+        val list: ArrayList<ChartEntry> = ArrayList()
+        list.add(ChartEntry(30, color = ContextCompat.getColor(this, R.color.colorAccent)))
+        list.add(ChartEntry(55))
+        list.add(ChartEntry(150))
+        list.add(ChartEntry(265))
+        chartView.addChartEntries(list)
+
     }
 }
